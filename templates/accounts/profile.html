@@ -1,0 +1,398 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Profile - MangaShop{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <!-- Sidebar with Quick Actions -->
+        <div class="col-lg-3 mb-4">
+            <div class="category-sidebar">
+                <div class="category-header text-center">
+                    <h4 class="mb-0 text-white">
+                        <i class="bi bi-person-badge me-2"></i>PROFILE
+                    </h4>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="#profile-info" class="list-group-item list-group-item-action active">
+                        <i class="bi bi-person-gear me-2"></i>PROFILE INFO
+                    </a>
+                    <a href="{% url 'cart:cart_detail' %}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-cart3 me-2"></i>MY CART
+                    </a>
+                    <a href="{% url 'store:home' %}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-house me-2"></i>BACK TO HOME
+                    </a>
+                    <a href="{% url 'accounts:logout' %}" class="list-group-item list-group-item-action text-danger">
+                        <i class="bi bi-box-arrow-right me-2"></i>LOGOUT
+                    </a>
+                </div>
+
+                <!-- Account Summary Card -->
+                <div class="info-card mt-4">
+                    <h6 class="mb-3" style="color: var(--manga-red); font-family: 'Mochiy Pop One', sans-serif;">
+                        <i class="bi bi-info-circle me-2"></i>ACCOUNT SUMMARY
+                    </h6>
+                    <div class="mb-3">
+                        <small class="text-muted">MEMBER SINCE</small>
+                        <p class="mb-1 fw-bold">
+                            <i class="bi bi-calendar me-2"></i>
+                            {{ user.date_joined|date:"M j, Y" }}
+                        </p>
+                        <small class="text-muted">
+                            <i class="bi bi-clock me-2"></i>
+                            {{ user.date_joined|timesince }} ago
+                        </small>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted">LAST LOGIN</small>
+                        <p class="mb-0 fw-bold">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>
+                            {{ user.last_login|date:"M j, Y"|default:"Never" }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Content -->
+        <div class="col-lg-9">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h1 class="mb-2" style="font-family: 'Mochiy Pop One', sans-serif; background: linear-gradient(45deg, var(--manga-red), var(--manga-pink), var(--manga-orange)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                            <i class="bi bi-person-circle me-2"></i>MY PROFILE
+                        </h1>
+                        <p class="mb-0" style="color: var(--text-muted); font-size: 1.1rem;">Manage your account information and shipping details</p>
+                    </div>
+                    <div class="col-auto">
+                        <span class="badge fs-6 p-3 floating" style="background: linear-gradient(45deg, var(--manga-yellow), var(--manga-orange));">
+                            <i class="bi bi-shield-check me-1"></i>ACCOUNT ACTIVE
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Form Section -->
+            <div class="form-section">
+                <div class="row">
+                    <!-- Account Details -->
+                    <div class="col-md-6">
+                        <div class="mb-4">
+                            <h4 style="font-family: 'Mochiy Pop One', sans-serif; color: var(--manga-red);">
+                                <i class="bi bi-person-vcard me-2"></i>ACCOUNT DETAILS
+                            </h4>
+                            <p class="text-muted">Update your basic account information</p>
+                        </div>
+
+                        <form method="post">
+                            {% csrf_token %}
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Username</label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="background: linear-gradient(45deg, var(--manga-red), var(--manga-pink)); color: white; border: none;">
+                                        <i class="bi bi-person"></i>
+                                    </span>
+                                    <input type="text" class="form-control" value="{{ user.username }}" readonly style="border: 2px solid rgba(0, 0, 0, 0.1); border-radius: 0 10px 10px 0;">
+                                </div>
+                                <small class="text-muted">Username cannot be changed</small>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Email Address</label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="background: linear-gradient(45deg, var(--manga-red), var(--manga-pink)); color: white; border: none;">
+                                        <i class="bi bi-envelope"></i>
+                                    </span>
+                                    <input type="email" name="email" class="form-control" value="{{ user.email }}" style="border: 2px solid rgba(0, 0, 0, 0.1); border-radius: 0 10px 10px 0;">
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">First Name</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text" style="background: linear-gradient(45deg, var(--manga-red), var(--manga-pink)); color: white; border: none;">
+                                            <i class="bi bi-person"></i>
+                                        </span>
+                                        <input type="text" name="first_name" class="form-control" value="{{ user.first_name }}" style="border: 2px solid rgba(0, 0, 0, 0.1); border-radius: 0 10px 10px 0;">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Last Name</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text" style="background: linear-gradient(45deg, var(--manga-red), var(--manga-pink)); color: white; border: none;">
+                                            <i class="bi bi-person"></i>
+                                        </span>
+                                        <input type="text" name="last_name" class="form-control" value="{{ user.last_name }}" style="border: 2px solid rgba(0, 0, 0, 0.1); border-radius: 0 10px 10px 0;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Profile Picture -->
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <h4 style="font-family: 'Mochiy Pop One', sans-serif; color: var(--manga-red);">
+                                    <i class="bi bi-person-square me-2"></i>PROFILE PICTURE
+                                </h4>
+                                <p class="text-muted">Your avatar and profile image</p>
+                            </div>
+
+                            <div class="text-center mb-4">
+                                <div class="rounded-circle d-inline-flex align-items-center justify-content-center floating" 
+                                     style="width: 180px; height: 180px; background: linear-gradient(135deg, var(--manga-red), var(--manga-pink)); color: white; font-size: 4rem; border: 6px solid var(--manga-red); box-shadow: var(--shadow-medium);">
+                                    <i class="bi bi-person"></i>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="button" class="btn-manga-outline" style="border-radius: 20px;">
+                                    <i class="bi bi-camera me-2"></i>CHANGE AVATAR
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Information -->
+                    <div class="mt-4">
+                        <div class="mb-4">
+                            <h4 style="font-family: 'Mochiy Pop One', sans-serif; color: var(--manga-red);">
+                                <i class="bi bi-truck me-2"></i>SHIPPING INFORMATION
+                            </h4>
+                            <p class="text-muted">Update your delivery address and contact details</p>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Phone Number</label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="background: linear-gradient(45deg, var(--manga-red), var(--manga-pink)); color: white; border: none;">
+                                        <i class="bi bi-telephone"></i>
+                                    </span>
+                                    <input type="text" name="phone" class="form-control" value="{{ profile.phone }}" placeholder="Enter your phone number" style="border: 2px solid rgba(0, 0, 0, 0.1); border-radius: 0 10px 10px 0;">
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">City</label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="background: linear-gradient(45deg, var(--manga-red), var(--manga-pink)); color: white; border: none;">
+                                        <i class="bi bi-geo-alt"></i>
+                                    </span>
+                                    <input type="text" name="city" class="form-control" value="{{ profile.city }}" placeholder="Enter your city" style="border: 2px solid rgba(0, 0, 0, 0.1); border-radius: 0 10px 10px 0;">
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label fw-bold">Address</label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="background: linear-gradient(45deg, var(--manga-red), var(--manga-pink)); color: white; border: none;">
+                                        <i class="bi bi-house"></i>
+                                    </span>
+                                    <textarea name="address" class="form-control" rows="3" placeholder="Enter your complete address" style="border: 2px solid rgba(0, 0, 0, 0.1); border-radius: 0 10px 10px 0;">{{ profile.address }}</textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold">State/Province</label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="background: linear-gradient(45deg, var(--manga-red), var(--manga-pink)); color: white; border: none;">
+                                        <i class="bi bi-map"></i>
+                                    </span>
+                                    <input type="text" name="state" class="form-control" value="{{ profile.state }}" placeholder="State" style="border: 2px solid rgba(0, 0, 0, 0.1); border-radius: 0 10px 10px 0;">
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold">Postal Code</label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="background: linear-gradient(45deg, var(--manga-red), var(--manga-pink)); color: white; border: none;">
+                                        <i class="bi bi-postcard"></i>
+                                    </span>
+                                    <input type="text" name="postal_code" class="form-control" value="{{ profile.postal_code }}" placeholder="ZIP/Postal" style="border: 2px solid rgba(0, 0, 0, 0.1); border-radius: 0 10px 10px 0;">
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold">Country</label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="background: linear-gradient(45deg, var(--manga-red), var(--manga-pink)); color: white; border: none;">
+                                        <i class="bi bi-globe"></i>
+                                    </span>
+                                    <input type="text" name="country" class="form-control" value="{{ profile.country }}" placeholder="Country" style="border: 2px solid rgba(0, 0, 0, 0.1); border-radius: 0 10px 10px 0;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="d-flex gap-3 justify-content-end">
+                                    <a href="{% url 'store:home' %}" class="btn-manga-outline" style="padding: 12px 30px;">
+                                        <i class="bi bi-arrow-left me-2"></i>CANCEL
+                                    </a>
+                                    <button type="submit" class="btn-manga" style="padding: 12px 30px;">
+                                        <i class="bi bi-check-circle me-2"></i>UPDATE PROFILE
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-section {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: var(--shadow-medium);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        position: relative;
+    }
+
+    .form-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, var(--manga-red), var(--manga-pink), var(--manga-orange));
+        border-radius: 20px 20px 0 0;
+    }
+
+    .form-control {
+        border: 2px solid rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: var(--manga-red);
+        box-shadow: 0 0 0 3px rgba(255, 46, 76, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .btn-manga {
+        background: linear-gradient(45deg, var(--manga-red), var(--manga-pink));
+        border: none;
+        color: white;
+        padding: 12px 30px;
+        border-radius: 25px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow-medium);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-manga:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(255, 46, 76, 0.4);
+        color: white;
+    }
+
+    .btn-manga-outline {
+        border: 2px solid var(--manga-red);
+        color: var(--manga-red);
+        background: transparent;
+        padding: 12px 30px;
+        border-radius: 25px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-manga-outline:hover {
+        background: var(--manga-red);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-light);
+    }
+
+    .info-card {
+        background: linear-gradient(135deg, rgba(255, 46, 76, 0.05) 0%, rgba(255, 107, 53, 0.05) 100%);
+        border-radius: 15px;
+        padding: 1.5rem;
+        border-left: 4px solid var(--manga-red);
+        box-shadow: var(--shadow-light);
+    }
+
+    .category-sidebar {
+        background: white;
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow-medium);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 20px;
+    }
+
+    .category-sidebar::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, var(--manga-red), var(--manga-pink), var(--manga-orange));
+        border-radius: 20px 20px 0 0;
+    }
+
+    .category-header {
+        background: linear-gradient(135deg, var(--manga-red), var(--manga-pink));
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .list-group-item {
+        background: transparent;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        color: var(--text-dark);
+        padding: 1rem 1.5rem;
+        margin-bottom: 0.5rem;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+
+    .list-group-item:hover,
+    .list-group-item.active {
+        background: linear-gradient(45deg, var(--manga-red), var(--manga-pink));
+        color: white;
+        border-color: var(--manga-red);
+        transform: translateX(5px);
+        box-shadow: var(--shadow-light);
+    }
+
+    .page-header {
+        background: 
+            linear-gradient(135deg, rgba(255, 46, 76, 0.1) 0%, rgba(255, 107, 53, 0.1) 100%),
+            url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none"/><path d="M20,20 L80,20 L80,80 L20,80 Z" fill="none" stroke="rgba(255,46,76,0.1)" stroke-width="2"/></svg>');
+        border-radius: 20px;
+        padding: 2.5rem;
+        margin-bottom: 3rem;
+        border: 2px solid rgba(255, 46, 76, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><pattern id="mangaPattern" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="2" fill="rgba(255,46,76,0.1)"/></pattern></defs><rect width="1200" height="800" fill="url(%23mangaPattern)"/></svg>');
+        opacity: 0.5;
+    }
+</style>
+{% endblock %}

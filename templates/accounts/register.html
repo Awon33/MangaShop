@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register - MangaShop{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <!-- Page Header -->
+            <div class="page-header text-center mb-4">
+                <h1 style="font-family: 'Mochiy Pop One', sans-serif; background: linear-gradient(45deg, var(--manga-red), var(--manga-pink), var(--manga-orange)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    <i class="bi bi-person-plus me-2"></i>JOIN US
+                </h1>
+                <p class="mb-0" style="color: var(--text-muted);">Start your manga journey with us today!</p>
+            </div>
+
+            <!-- Register Card -->
+            <div class="form-section">
+                <div class="text-center mb-4">
+                    <!-- <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3 floating" 
+                         style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--manga-red), var(--manga-pink)); color: white; font-size: 2rem; border: 3px solid var(--manga-red);">
+                        <i class="bi bi-person-add"></i>
+                    </div>
+                    <h4 style="font-family: 'Mochiy Pop One', sans-serif; color: var(--manga-red);">
+                        CREATE ACCOUNT
+                    </h4> -->
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text" style="background: linear-gradient(45deg, var(--manga-red), var(--manga-pink)); color: white; border: none;">
+                                <i class="bi bi-person"></i>
+                            </span>
+                            <input type="text" name="username" class="form-control" placeholder="Choose a username" required style="border: 2px solid rgba(0, 0, 0, 0.1); border-radius: 0 10px 10px 0;">
+                        </div>
+                        {% if form.username.errors %}
+                        <div class="text-danger small mt-1">
+                            {% for error in form.username.errors %}
+                                <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text" style="background: linear-gradient(45deg, var(--manga-red), var(--manga-pink)); color: white; border: none;">
+                                <i class="bi bi-lock"></i>
+                            </span>
+                            <input type="password" name="password1" class="form-control" placeholder="Create a password" required style="border: 2px solid rgba(0, 0, 0, 0.1); border-radius: 0 10px 10px 0;">
+                        </div>
+                        {% if form.password1.errors %}
+                        <div class="text-danger small mt-1">
+                            {% for error in form.password1.errors %}
+                                <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Confirm Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text" style="background: linear-gradient(45deg, var(--manga-red), var(--manga-pink)); color: white; border: none;">
+                                <i class="bi bi-lock-fill"></i>
+                            </span>
+                            <input type="password" name="password2" class="form-control" placeholder="Confirm your password" required style="border: 2px solid rgba(0, 0, 0, 0.1); border-radius: 0 10px 10px 0;">
+                        </div>
+                        {% if form.password2.errors %}
+                        <div class="text-danger small mt-1">
+                            {% for error in form.password2.errors %}
+                                <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="btn-manga w-100 mb-3" style="padding: 15px;">
+                        <i class="bi bi-person-check me-2"></i>CREATE ACCOUNT
+                    </button>
+                </form>
+
+                <div class="text-center mt-4">
+                    <p class="mb-3" style="color: var(--text-muted);">Already have an account?</p>
+                    <a href="{% url 'accounts:login' %}" class="btn-manga-outline w-100" style="padding: 12px;">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>SIGN IN INSTEAD
+                    </a>
+                </div>
+
+                <div class="text-center mt-3">
+                    <a href="{% url 'store:home' %}" class="text-muted" style="text-decoration: none;">
+                        <i class="bi bi-arrow-left me-1"></i>Back to Homepage
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-section {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: var(--shadow-medium);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        position: relative;
+    }
+
+    .form-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, var(--manga-red), var(--manga-pink), var(--manga-orange));
+        border-radius: 20px 20px 0 0;
+    }
+
+    .form-control {
+        border: 2px solid rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: var(--manga-red);
+        box-shadow: 0 0 0 3px rgba(255, 46, 76, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .btn-manga {
+        background: linear-gradient(45deg, var(--manga-red), var(--manga-pink));
+        border: none;
+        color: white;
+        padding: 12px 30px;
+        border-radius: 25px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow-medium);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-manga:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(255, 46, 76, 0.4);
+        color: white;
+    }
+
+    .btn-manga-outline {
+        border: 2px solid var(--manga-red);
+        color: var(--manga-red);
+        background: transparent;
+        padding: 12px 30px;
+        border-radius: 25px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-manga-outline:hover {
+        background: var(--manga-red);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-light);
+    }
+
+    .page-header {
+        background: 
+            linear-gradient(135deg, rgba(255, 46, 76, 0.1) 0%, rgba(255, 107, 53, 0.1) 100%),
+            url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none"/><path d="M20,20 L80,20 L80,80 L20,80 Z" fill="none" stroke="rgba(255,46,76,0.1)" stroke-width="2"/></svg>');
+        border-radius: 20px;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        border: 2px solid rgba(255, 46, 76, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><pattern id="mangaPattern" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="2" fill="rgba(255,46,76,0.1)"/></pattern></defs><rect width="1200" height="800" fill="url(%23mangaPattern)"/></svg>');
+        opacity: 0.5;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .floating {
+        animation: float 4s ease-in-out infinite;
+    }
+</style>
+{% endblock %}

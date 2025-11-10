@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}MangaShop - Where Stories Come to Life{% endblock %}
+
+{% block content %}
+    <!-- Manga Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <h1 class="hero-title floating">DISCOVER YOUR<br>NEXT FAVORITE MANGA</h1>
+                    <p class="hero-subtitle">Where Stories Come to Life</p>
+                    <p class="lead mb-5" style="color: var(--text-muted); max-width: 600px; margin: 0 auto;">
+                        Explore our extensive collection of manga and graphic novels. From classic series to the latest releases, your next adventure awaits in the pages of our curated selection.
+                    </p>
+                    <div class="d-flex gap-4 justify-content-center flex-wrap">
+                        <a href="{% url 'store:product_list' %}" class="manga-button">
+                            <i class="bi bi-search me-2"></i>EXPLORE NOW
+                        </a>
+                        {% if cart_total_items and cart_total_items > 0 %}
+                        <a href="{% url 'cart:cart_detail' %}" class="manga-button manga-button-outline">
+                            <i class="bi bi-cart-check me-2"></i>CART ({{ cart_total_items }})
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Manga Section -->
+    <section class="featured-section">
+        <div class="container">
+            <h2 class="section-title">FEATURED MANGA</h2>
+            <div class="row">
+                {% for product in featured_products %}
+                <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                    <div class="product-card h-100">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" class="product-image" alt="{{ product.title }}">
+                        {% else %}
+                        <div class="product-image-placeholder">
+                            <i class="bi bi-journal-bookmark"></i>
+                        </div>
+                        {% endif %}
+                        
+                        {% if product.featured %}
+                        <div class="product-badge">
+                            <i class="bi bi-star-fill me-1"></i>FEATURED
+                        </div>
+                        {% endif %}
+                        
+                        <div class="card-body p-4 d-flex flex-column">
+                            <h5 class="product-title">{{ product.title }}</h5>
+                            <p class="product-author">
+                                <i class="bi bi-person me-1"></i>by {{ product.author }}
+                            </p>
+                            <p class="product-price">${{ product.price }}</p>
+                            <div class="mt-2 mb-3">
+                                <span class="badge {% if product.stock > 0 %}bg-success{% else %}bg-danger{% endif %}">
+                                    {% if product.stock > 0 %}
+                                    <i class="bi bi-check-circle-fill me-1"></i>IN STOCK
+                                    {% else %}
+                                    <i class="bi bi-x-circle-fill me-1"></i>OUT OF STOCK
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="mt-auto">
+                                <div class="d-grid gap-2">
+                                    <a href="{% url 'store:product_detail' product.id %}" class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-eye me-1"></i>VIEW DETAILS
+                                    </a>
+                                    {% if product.stock > 0 %}
+                                    <form method="post" action="{% url 'cart:cart_add' product.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn-manga-sm w-100">
+                                            <i class="bi bi-cart-plus me-1"></i>ADD TO CART
+                                        </button>
+                                    </form>
+                                    {% else %}
+                                    <button class="btn btn-secondary btn-sm w-100" disabled>
+                                        <i class="bi bi-x-circle me-1"></i>OUT OF STOCK
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center">
+                    <div class="alert alert-warning" style="background: #fff3cd; border: 1px solid #ffeaa7;">
+                        <i class="bi bi-exclamation-triangle me-2" style="color: #e17055;"></i>
+                        <h4 style="color: #e17055;">NO FEATURED MANGA FOUND</h4>
+                        <p class="mb-3" style="color: var(--text-muted);">Add some featured manga products in the admin panel to display them here.</p>
+                        <a href="/admin/store/product/add/" class="manga-button btn-sm">
+                            <i class="bi bi-plus-circle me-1"></i>ADD MANGA
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            {% if featured_products %}
+            <div class="text-center mt-5">
+                <a href="{% url 'store:product_list' %}" class="manga-button">
+                    <i class="bi bi-arrow-right me-2"></i>VIEW ALL MANGA
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">MANGA TITLES</div>
+                </div>
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">PUBLISHERS</div>
+                </div>
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="stat-number">10K+</div>
+                    <div class="stat-label">HAPPY READERS</div>
+                </div>
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">CUSTOMER SUPPORT</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <h2 class="section-title">WHY SHOP WITH US?</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card h-100">
+                        <div class="feature-icon">
+                            <i class="bi bi-truck"></i>
+                        </div>
+                        <h4>FAST DELIVERY</h4>
+                        <p style="color: var(--text-muted);">Quick and reliable shipping to get your manga to you as soon as possible.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card h-100">
+                        <div class="feature-icon">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <h4>SECURE PAYMENT</h4>
+                        <p style="color: var(--text-muted);">Your payments are protected with industry-standard security measures.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card h-100">
+                        <div class="feature-icon">
+                            <i class="bi bi-award"></i>
+                        </div>
+                        <h4>QUALITY GUARANTEE</h4>
+                        <p style="color: var(--text-muted);">We ensure all our manga are authentic and in perfect condition.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Manga-style interactive effects
+    document.addEventListener('DOMContentLoaded', function() {
+        // Hover effects for product cards
+        const cards = document.querySelectorAll('.product-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px)';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Add to cart animation
+        const addToCartForms = document.querySelectorAll('form[action*="cart_add"]');
+        addToCartForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const button = this.querySelector('button');
+                const originalText = button.innerHTML;
+                
+                // Show loading state
+                button.innerHTML = '<i class="bi bi-arrow-repeat spinner-border spinner-border-sm me-1"></i>ADDING...';
+                button.disabled = true;
+                
+                // Add glow effect
+                button.style.boxShadow = '0 0 15px rgba(255, 46, 76, 0.5)';
+                
+                // Revert after 2 seconds
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                    button.style.boxShadow = '';
+                }, 2000);
+            });
+        });
+
+        // Simple parallax effect for hero section
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero-section');
+            hero.style.backgroundPositionY = -(scrolled * 0.3) + 'px';
+        });
+    });
+</script>
+{% endblock %}

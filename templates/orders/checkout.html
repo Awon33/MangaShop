@@ -1,0 +1,327 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout - MangaShop{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 style="font-family: 'Mochiy Pop One', sans-serif; background: linear-gradient(45deg, var(--manga-red), var(--manga-pink), var(--manga-orange)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    <i class="bi bi-credit-card me-2"></i>CHECKOUT
+                </h1>
+                <p class="mb-0" style="color: var(--text-muted); font-size: 1.1rem;">Complete your order with secure payment</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <form method="post">
+                {% csrf_token %}
+                
+                <!-- Billing Information -->
+                <div class="form-section">
+                    <h3 class="mb-4" style="font-family: 'Mochiy Pop One', sans-serif; color: var(--manga-red);">
+                        <i class="bi bi-person-badge me-2"></i>BILLING INFORMATION
+                    </h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" name="full_name" class="form-control" value="{{ user.get_full_name|default:'' }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" name="email" class="form-control" value="{{ user.email|default:'' }}" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Phone</label>
+                        <input type="text" name="phone" class="form-control" value="{{ user.userprofile.phone|default:'' }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Address</label>
+                        <textarea name="address" class="form-control" rows="3" required>{{ user.userprofile.address|default:'' }}</textarea>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">City</label>
+                                <input type="text" name="city" class="form-control" value="{{ user.userprofile.city|default:'' }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">State</label>
+                                <input type="text" name="state" class="form-control" value="{{ user.userprofile.state|default:'' }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Postal Code</label>
+                                <input type="text" name="postal_code" class="form-control" value="{{ user.userprofile.postal_code|default:'' }}" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Country</label>
+                        <input type="text" name="country" class="form-control" value="{{ user.userprofile.country|default:'United States' }}" required>
+                    </div>
+                </div>
+
+                <!-- Payment Method -->
+                <div class="form-section">
+                    <h3 class="mb-4" style="font-family: 'Mochiy Pop One', sans-serif; color: var(--manga-red);">
+                        <i class="bi bi-credit-card me-2"></i>PAYMENT METHOD
+                    </h3>
+                    <div class="payment-method-card selected" onclick="selectPaymentMethod('stripe')">
+                        <div class="form-check mb-0">
+                            <input class="form-check-input" type="radio" name="payment_method" value="stripe" checked id="stripe">
+                            <label class="form-check-label fw-bold" for="stripe">
+                                <i class="bi bi-credit-card-2-front me-2"></i>Credit/Debit Card (Stripe)
+                            </label>
+                            <p class="text-muted mb-0 mt-1">Secure payment processing via Stripe</p>
+                        </div>
+                    </div>
+                    <div class="payment-method-card" onclick="selectPaymentMethod('paypal')">
+                        <div class="form-check mb-0">
+                            <input class="form-check-input" type="radio" name="payment_method" value="paypal" id="paypal">
+                            <label class="form-check-label fw-bold" for="paypal">
+                                <i class="bi bi-paypal me-2"></i>PayPal
+                            </label>
+                            <p class="text-muted mb-0 mt-1">Fast and secure payment with PayPal</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-manga w-100 py-3 mb-4">
+                    <i class="bi bi-lock-fill me-2"></i>COMPLETE ORDER - ${{ cart.get_total_price|floatformat:2 }}
+                </button>
+            </form>
+        </div>
+        
+        <!-- Order Summary -->
+        <div class="col-lg-4">
+            <div class="order-summary">
+                <h4 class="mb-3" style="font-family: 'Mochiy Pop One', sans-serif; color: var(--manga-red);">
+                    <i class="bi bi-receipt me-2"></i>ORDER SUMMARY
+                </h4>
+                
+                {% for item in cart.items.all %}
+                <div class="cart-item mb-3 pb-3 border-bottom">
+                    <div class="d-flex align-items-start">
+                        {% if item.product.image %}
+                        <img src="{{ item.product.image.url }}" alt="{{ item.product.title }}" 
+                             class="rounded me-3" style="width: 60px; height: 80px; object-fit: cover;">
+                        {% else %}
+                        <div class="rounded d-flex align-items-center justify-content-center me-3" 
+                             style="width: 60px; height: 80px; background: linear-gradient(135deg, var(--manga-red), var(--manga-pink)); color: white;">
+                            <i class="bi bi-journal-bookmark"></i>
+                        </div>
+                        {% endif %}
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1" style="font-family: 'Mochiy Pop One', sans-serif; font-size: 0.9rem;">{{ item.product.title }}</h6>
+                            <p class="mb-1 text-muted small">by {{ item.product.author }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-muted small">Qty: {{ item.quantity }}</span>
+                                <span class="fw-bold" style="color: var(--manga-red);">${{ item.total_price|floatformat:2 }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center py-4">
+                    <i class="bi bi-cart-x" style="font-size: 3rem; color: var(--text-muted);"></i>
+                    <p class="mt-2 text-muted">Your cart is empty</p>
+                </div>
+                {% endfor %}
+                
+                {% if cart.items.all %}
+                <hr>
+                <div class="d-flex justify-content-between mb-2">
+                    <span style="color: var(--text-muted);">Subtotal:</span>
+                    <span style="font-weight: 600;">${{ cart.get_total_price|floatformat:2 }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span style="color: var(--text-muted);">Shipping:</span>
+                    <span class="text-success" style="font-weight: 600;">FREE</span>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <span style="color: var(--text-muted);">Tax:</span>
+                    <span style="font-weight: 600;">${{ cart.get_tax|floatformat:2 }}</span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between">
+                    <strong style="font-size: 1.2rem; color: var(--text-dark);">TOTAL:</strong>
+                    <strong style="font-size: 1.3rem; color: var(--manga-red);">${{ cart.get_final_total|floatformat:2 }}</strong>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Security Badge -->
+            <div class="info-card mt-3">
+                <div class="text-center">
+                    <i class="bi bi-shield-check" style="font-size: 2rem; color: var(--manga-red);"></i>
+                    <h6 class="mt-2 mb-1" style="color: var(--manga-red);">Secure Checkout</h6>
+                    <p class="small text-muted mb-0">Your payment information is encrypted and secure</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-section {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: var(--shadow-medium);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        position: relative;
+        margin-bottom: 2rem;
+    }
+
+    .form-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, var(--manga-red), var(--manga-pink), var(--manga-orange));
+        border-radius: 20px 20px 0 0;
+    }
+
+    .form-control {
+        border: 2px solid rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: var(--manga-red);
+        box-shadow: 0 0 0 3px rgba(255, 46, 76, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .order-summary {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: var(--shadow-medium);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        position: relative;
+    }
+
+    .order-summary::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, var(--manga-red), var(--manga-pink), var(--manga-orange));
+        border-radius: 20px 20px 0 0;
+    }
+
+    .btn-manga {
+        background: linear-gradient(45deg, var(--manga-red), var(--manga-pink));
+        border: none;
+        color: white;
+        padding: 15px 35px;
+        border-radius: 25px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow-medium);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-manga:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(255, 46, 76, 0.4);
+        color: white;
+    }
+
+    .payment-method-card {
+        background: white;
+        border: 2px solid rgba(0, 0, 0, 0.1);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .payment-method-card:hover {
+        border-color: var(--manga-red);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-light);
+    }
+
+    .payment-method-card.selected {
+        border-color: var(--manga-red);
+        background: linear-gradient(135deg, rgba(255, 46, 76, 0.05) 0%, rgba(255, 107, 53, 0.05) 100%);
+    }
+
+    .page-header {
+        background: 
+            linear-gradient(135deg, rgba(255, 46, 76, 0.1) 0%, rgba(255, 107, 53, 0.1) 100%),
+            url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none"/><path d="M20,20 L80,20 L80,80 L20,80 Z" fill="none" stroke="rgba(255,46,76,0.1)" stroke-width="2"/></svg>');
+        border-radius: 20px;
+        padding: 2.5rem;
+        margin-bottom: 3rem;
+        border: 2px solid rgba(255, 46, 76, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><pattern id="mangaPattern" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="2" fill="rgba(255,46,76,0.1)"/></pattern></defs><rect width="1200" height="800" fill="url(%23mangaPattern)"/></svg>');
+        opacity: 0.5;
+    }
+
+    .info-card {
+        background: linear-gradient(135deg, rgba(255, 46, 76, 0.05) 0%, rgba(255, 107, 53, 0.05) 100%);
+        border-radius: 15px;
+        padding: 1.5rem;
+        border-left: 4px solid var(--manga-red);
+    }
+</style>
+
+<script>
+    function selectPaymentMethod(method) {
+        // Update radio button
+        document.querySelector(`input[value="${method}"]`).checked = true;
+        
+        // Update card styles
+        document.querySelectorAll('.payment-method-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        event.currentTarget.classList.add('selected');
+    }
+
+    // Auto-fill user data if available
+    document.addEventListener('DOMContentLoaded', function() {
+        // You can add any client-side validation or enhancements here
+        console.log('Checkout page loaded');
+    });
+</script>
+{% endblock %}
